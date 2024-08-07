@@ -102,10 +102,10 @@ check_required() {
 	# Don't use quotes to get word splitting.
 	for cmd in $required
 	do
-		log "checking $cmd"
+		echo "checking $cmd"
 		if ! is_command "$cmd"
 		then
-			log "the full list of required software: [$required]"
+			echo "the full list of required software: [$required]"
 
 			error_exit "$cmd is required to install AdGuard Home via this script"
 		fi
@@ -121,7 +121,7 @@ check_out_dir() {
 
 	if ! [ -d "$out_dir" ]
 	then
-		log "$out_dir directory will be created"
+		echo "$out_dir directory will be created"
 	fi
 }
 
@@ -165,7 +165,7 @@ parse_opts() {
 			verbose='1'
 			;;
 		(*)
-			log "bad option $OPTARG"
+			echo "bad option $OPTARG"
 
 			usage
 			;;
@@ -194,7 +194,7 @@ supported values are 'development', 'edge', 'beta', and 'release'"
 	esac
 
 	# Log.
-	log "channel: $channel"
+	echo "channel: $channel"
 }
 
 # Function set_os sets the os if needed and validates the value.
@@ -235,7 +235,7 @@ set_os() {
 	esac
 
 	# Log.
-	log "operating system: $os"
+	echo "operating system: $os"
 }
 
 # Function set_cpu sets the cpu if needed and validates the value.
@@ -292,7 +292,7 @@ set_cpu() {
 	esac
 
 	# Log.
-	log "cpu type: $cpu"
+	echo "cpu type: $cpu"
 }
 
 # Function fix_darwin performs some configuration changes for macOS if needed.
@@ -413,7 +413,7 @@ configure() {
 	agh_dir="${out_dir}/AdGuardHome"
 	readonly pkg_name url agh_dir
 
-	log "AdGuard Home will be installed into $agh_dir"
+	echo "AdGuard Home will be installed into $agh_dir"
 }
 
 # Function is_root checks for root privileges to be granted.
@@ -484,19 +484,19 @@ rerun_with_root() {
 # Function download downloads the file from the URL and saves it to the
 # specified filepath.
 download() {
-	log "downloading package from $url -> $pkg_name"
+	echo "downloading package from $url -> $pkg_name"
 
 	if ! "$download_func" "$url" "$pkg_name"
 	then
 		error_exit "cannot download the package from $url into $pkg_name"
 	fi
 
-	log "successfully downloaded $pkg_name"
+	echo "successfully downloaded $pkg_name"
 }
 
 # Function unpack unpacks the passed archive depending on it's extension.
 unpack() {
-	log "unpacking package from $pkg_name into $out_dir"
+	echo "unpacking package from $pkg_name into $out_dir"
 	if ! mkdir -p "$out_dir"
 	then
 		error_exit "cannot create directory $out_dir"
@@ -515,9 +515,9 @@ unpack() {
 		;;
 	esac
 
-	log "successfully unpacked, contents: $( echo; ls -l -A "$agh_dir" )"
+	echo "successfully unpacked, contents: $( echo; ls -l -A "$agh_dir" )"
 
-	rm "$pkg_name"
+	# rm "$pkg_name"
 }
 
 # Function handle_existing detects the existing AGH installation and takes care
@@ -551,10 +551,10 @@ handle_existing() {
 			# It doesn't terminate the script since it is possible
 			# that AGH just not installed as service but appearing
 			# in the directory.
-			log "cannot uninstall AdGuard Home from $agh_dir"
+			echo "cannot uninstall AdGuard Home from $agh_dir"
 		fi
 
-		rm -r "$agh_dir"
+		#rm -r "$agh_dir"
 
 		log 'AdGuard Home was successfully uninstalled'
 	fi
@@ -579,9 +579,9 @@ install_service() {
 		return 0
 	fi
 
-	log "installation failed, removing $agh_dir"
+	echo "installation failed, removing $agh_dir"
 
-	rm -r "$agh_dir"
+	#rm -r "$agh_dir"
 
 	# Some devices detected to have armv7 CPU face the compatibility
 	# issues with actual armv7 builds.  We should try to install the
@@ -593,7 +593,7 @@ install_service() {
 		cpu='armv5'
 		reinstall='1'
 
-		log "trying to use $cpu cpu"
+		echo "trying to use $cpu cpu"
 
 		rerun_with_root
 	fi
